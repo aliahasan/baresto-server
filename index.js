@@ -169,8 +169,43 @@ async function run() {
       }
     });
 
+    // get user sigle  added items
+    app.get("/api/v1/addeditem/:id", async (req, res) => {
+      try {
+        const id = req.params.id;
+        const queryId = { _id: new ObjectId(id) };
+        const foods = await foodsCollection.findOne(queryId);
+        res.send(foods);
+      } catch (error) {
+        console.log(error);
+      }
+    });
+
+    // update data
+    app.put("/api/v1/update/:id", async (req, res) => {
+      try {
+        const id = req.params.id;
+        const data = req.body;
+        const queryId = { _id: new ObjectId(id) };
+        const updatedData = {
+          $set: {
+            ...data,
+          },
+        };
+        const option = { upsert: true };
+        const result = await foodsCollection.updateOne(
+          queryId,
+          updatedData,
+          option
+        );
+        res.send(result);
+      } catch (error) {
+        console.log(error);
+      }
+    });
+
     // storgig users orders ----------------------------
-    app.post("/api/v1/userorders", async (req, res) => {
+    app.post("/api/v1/userorders", verifyToken, async (req, res) => {
       try {
         const data = req.body;
         const result = await userFoodsCollection.insertOne(data);
