@@ -47,7 +47,6 @@ const verifyToken = (req, res, next) => {
 
 async function run() {
   try {
-    await client.connect();
     // auth api starts from here-----------------------
     // createing access token--------------------------
     app.post("/api/v1/auth/access-token", (req, res) => {
